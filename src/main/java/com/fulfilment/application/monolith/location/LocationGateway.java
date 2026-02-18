@@ -7,9 +7,12 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResol
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class LocationGateway implements LocationResolver {
+
+  private static final Logger LOGGER = Logger.getLogger(LocationGateway.class.getName());
 
   private static final List<Location> locations = new ArrayList<>();
 
@@ -26,12 +29,18 @@ public class LocationGateway implements LocationResolver {
 
   @Override
   public Location resolveByIdentifier(String identifier) {
+    LOGGER.infov("Resolving location by identifier: {0}", identifier);
     if (identifier == null || identifier.isBlank()) {
+      LOGGER.warn("Location identifier is null or blank");
       throw new LocationIdentifierInvalidException();
     }
     return locations.stream()
         .filter(loc -> identifier.equals(loc.identification))
         .findFirst()
-        .orElseThrow(() -> new LocationNotFoundException(identifier));
+        .orElseThrow(
+            () -> {
+              LOGGER.warnv("Location not found: {0}", identifier);
+              return new LocationNotFoundException(identifier);
+            });
   }
 }
