@@ -53,6 +53,13 @@ public class StoreResource {
     if (store.id != null) {
       throw new WebApplicationException("Id was invalidly set on request.", 422);
     }
+    if (store.name == null || store.name.isBlank()) {
+      throw new WebApplicationException("Store name is required.", 422);
+    }
+    if (Store.find("name", store.name).firstResult() != null) {
+      throw new WebApplicationException(
+          "Store with name '" + store.name + "' already exists.", 409);
+    }
 
     store.persist();
 

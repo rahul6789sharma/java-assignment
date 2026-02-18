@@ -9,9 +9,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class FulfilmentService {
+
+  private static final Logger LOGGER =
+      Logger.getLogger(FulfilmentService.class.getName());
 
   private static final int MAX_WAREHOUSES_PER_PRODUCT_PER_STORE = 2;
   private static final int MAX_WAREHOUSES_PER_STORE = 3;
@@ -81,6 +85,9 @@ public class FulfilmentService {
 
     StoreProductFulfilment assignment = new StoreProductFulfilment(storeId, productId, warehouseId);
     fulfilmentRepository.persist(assignment);
+    LOGGER.infov(
+        "Fulfilment assigned: storeId={0}, productId={1}, warehouseId={2}",
+        storeId, productId, warehouseId);
   }
 
   /** Removes the assignment if present. Idempotent. */
@@ -90,6 +97,9 @@ public class FulfilmentService {
         fulfilmentRepository.findByStoreAndProductAndWarehouse(storeId, productId, warehouseId);
     if (existing != null) {
       fulfilmentRepository.delete(existing);
+      LOGGER.infov(
+          "Fulfilment unassigned: storeId={0}, productId={1}, warehouseId={2}",
+          storeId, productId, warehouseId);
     }
   }
 
