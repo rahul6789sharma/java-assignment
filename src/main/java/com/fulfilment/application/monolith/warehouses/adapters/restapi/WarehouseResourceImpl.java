@@ -1,7 +1,10 @@
 package com.fulfilment.application.monolith.warehouses.adapters.restapi;
 
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
+import com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException;
+import com.fulfilment.application.monolith.warehouses.domain.ports.ArchiveWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehouseOperation;
+import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
 import com.warehouse.api.WarehouseResource;
 import com.warehouse.api.beans.Warehouse;
 import jakarta.enterprise.context.RequestScoped;
@@ -19,6 +22,10 @@ public class WarehouseResourceImpl implements WarehouseResource {
   @Inject private WarehouseRepository warehouseRepository;
 
   @Inject private CreateWarehouseOperation createWarehouseOperation;
+
+  @Inject private ReplaceWarehouseOperation replaceWarehouseOperation;
+
+  @Inject private ArchiveWarehouseOperation archiveWarehouseOperation;
 
   @Override
   public List<Warehouse> listAllWarehousesUnits() {
@@ -43,17 +50,36 @@ public class WarehouseResourceImpl implements WarehouseResource {
   }
 
   @Override
+  @Transactional
   public void archiveAWarehouseUnitByID(String id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'archiveAWarehouseUnitByID'");
+    Long warehouseId = parseWarehouseId(id);
+    var warehouse = warehouseRepository.getById(warehouseId);
+    if (warehouse == null) {
+      throw new WarehouseNotFoundException(warehouseId);
+    }
+    archiveWarehouseOperation.archive(warehouse);
+  }
+
+  private static Long parseWarehouseId(String id) {
+    try {
+      return Long.parseLong(id);
+    } catch (NumberFormatException e) {
+      throw new WarehouseNotFoundException(-1L);
+    }
   }
 
   @Override
+  @Transactional
   public Warehouse replaceTheCurrentActiveWarehouse(
       String businessUnitCode, @NotNull Warehouse data) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException(
-        "Unimplemented method 'replaceTheCurrentActiveWarehouse'");
+    LOGGER.infov("Replacing warehouse: buCode={0}, location={1}", businessUnitCode, data.getLocation());
+
+    var newWarehouse = toDomainModel(data);
+    newWarehouse.businessUnitCode = businessUnitCode;
+
+    replaceWarehouseOperation.replace(newWarehouse);
+
+    return toWarehouseResponse(newWarehouse);
   }
 
   private com.fulfilment.application.monolith.warehouses.domain.models.Warehouse toDomainModel(

@@ -5,13 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.DuplicateBusinessUnitCodeException;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
+import com.fulfilment.application.monolith.warehouses.domain.ports.ArchiveWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehouseOperation;
+import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
 import com.warehouse.api.WarehouseResource;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -28,6 +31,12 @@ public class WarehouseResourceImplTest {
 
   @InjectMock
   CreateWarehouseOperation createWarehouseOperation;
+
+  @InjectMock
+  ReplaceWarehouseOperation replaceWarehouseOperation;
+
+  @InjectMock
+  ArchiveWarehouseOperation archiveWarehouseOperation;
 
   @Inject
   WarehouseResource warehouseResource;
@@ -138,17 +147,46 @@ public class WarehouseResourceImplTest {
   }
 
   @Test
-  public void archiveAWarehouseUnitByID_throwsUnsupportedOperation() {
-    assertThrows(
-        UnsupportedOperationException.class,
-        () -> warehouseResource.archiveAWarehouseUnitByID("1"));
+  public void archiveAWarehouseUnitByID_callsGetByIdAndArchiveWhenFound() {
+    var warehouse = domainWarehouse("MWH.001", "ZWOLLE-001", 100, 10);
+    when(warehouseRepository.getById(1L)).thenReturn(warehouse);
+
+    warehouseResource.archiveAWarehouseUnitByID("1");
+
+    verify(warehouseRepository).getById(1L);
+    verify(archiveWarehouseOperation).archive(warehouse);
   }
 
   @Test
-  public void replaceTheCurrentActiveWarehouse_throwsUnsupportedOperation() {
-    var data = apiWarehouse("MWH.001", "AMSTERDAM-001", 50, 10);
+  public void archiveAWarehouseUnitByID_throwsWhenWarehouseNotFound() {
+    when(warehouseRepository.getById(999L)).thenReturn(null);
+
     assertThrows(
-        UnsupportedOperationException.class,
-        () -> warehouseResource.replaceTheCurrentActiveWarehouse("MWH.001", data));
+        com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException.class,
+        () -> warehouseResource.archiveAWarehouseUnitByID("999"));
+
+    verify(warehouseRepository).getById(999L);
+    verify(archiveWarehouseOperation, never()).archive(any());
+  }
+
+  @Test
+  public void replaceTheCurrentActiveWarehouse_callsUseCaseAndReturnsMappedResponse() {
+    var data = apiWarehouse("MWH.001", "AMSTERDAM-001", 80, 50);
+
+    var response = warehouseResource.replaceTheCurrentActiveWarehouse("MWH.001", data);
+
+    ArgumentCaptor<Warehouse> captor = ArgumentCaptor.forClass(Warehouse.class);
+    verify(replaceWarehouseOperation).replace(captor.capture());
+    var passed = captor.getValue();
+    assertEquals("MWH.001", passed.businessUnitCode);
+    assertEquals("AMSTERDAM-001", passed.location);
+    assertEquals(80, passed.capacity);
+    assertEquals(50, passed.stock);
+
+    assertNotNull(response);
+    assertEquals("MWH.001", response.getBusinessUnitCode());
+    assertEquals("AMSTERDAM-001", response.getLocation());
+    assertEquals(80, response.getCapacity());
+    assertEquals(50, response.getStock());
   }
 }

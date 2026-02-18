@@ -81,6 +81,18 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
   }
 
   @Override
+  public Warehouse getById(Long id) {
+    if (id == null) {
+      return null;
+    }
+    DbWarehouse entity = findById(id);
+    if (entity == null) {
+      return null;
+    }
+    return entity.toWarehouse();
+  }
+
+  @Override
   public long countActiveByLocation(String location) {
     return count("location = ?1 and archivedAt is null", location);
   }
