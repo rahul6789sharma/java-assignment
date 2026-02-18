@@ -14,4 +14,10 @@ public interface WarehouseStore {
   void remove(Warehouse warehouse);
 
   Warehouse findByBusinessUnitCode(String buCode);
+
+  Warehouse findActiveByBusinessUnitCode(String buCode);
+
+  long countActiveByLocation(String location);
+
+  int totalCapacityByLocation(String location);
 }
