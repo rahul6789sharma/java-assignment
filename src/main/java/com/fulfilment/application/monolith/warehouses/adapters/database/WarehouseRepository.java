@@ -5,9 +5,12 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStor
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class WarehouseRepository implements WarehouseStore, PanacheRepository<DbWarehouse> {
+
+  private static final Logger LOGGER = Logger.getLogger(WarehouseRepository.class.getName());
 
   @Override
   public List<Warehouse> getAll() {
@@ -16,25 +19,88 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public void create(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'create'");
+    LOGGER.infov("Creating warehouse with business unit code: {0}", warehouse.businessUnitCode);
+    DbWarehouse entity = new DbWarehouse();
+    entity.businessUnitCode = warehouse.businessUnitCode;
+    entity.location = warehouse.location;
+    entity.capacity = warehouse.capacity;
+    entity.stock = warehouse.stock;
+    entity.createdAt = warehouse.createdAt;
+    entity.archivedAt = warehouse.archivedAt;
+    persist(entity);
   }
 
   @Override
   public void update(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'replace'");
+    LOGGER.infov("Updating warehouse with business unit code: {0}", warehouse.businessUnitCode);
+    DbWarehouse entity = find("businessUnitCode", warehouse.businessUnitCode).firstResult();
+    if (entity == null) {
+      LOGGER.warnv("Warehouse not found for update: {0}", warehouse.businessUnitCode);
+      return;
+    }
+    entity.location = warehouse.location;
+    entity.capacity = warehouse.capacity;
+    entity.stock = warehouse.stock;
+    entity.createdAt = warehouse.createdAt;
+    entity.archivedAt = warehouse.archivedAt;
+    persist(entity);
   }
 
   @Override
   public void remove(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
+    LOGGER.infov("Removing warehouse with business unit code: {0}", warehouse.businessUnitCode);
+    DbWarehouse entity = find("businessUnitCode", warehouse.businessUnitCode).firstResult();
+    if (entity != null) {
+      delete(entity);
+    } else {
+      LOGGER.warnv("Warehouse not found for removal: {0}", warehouse.businessUnitCode);
+    }
   }
 
   @Override
   public Warehouse findByBusinessUnitCode(String buCode) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    LOGGER.infov("Finding warehouse by business unit code: {0}", buCode);
+    DbWarehouse entity = find("businessUnitCode", buCode).firstResult();
+    if (entity == null) {
+      return null;
+    }
+    return entity.toWarehouse();
+  }
+
+  @Override
+  public Warehouse findActiveByBusinessUnitCode(String buCode) {
+    LOGGER.infov("Finding active warehouse by business unit code: {0}", buCode);
+    DbWarehouse entity = find("businessUnitCode = ?1 and archivedAt is null", buCode).firstResult();
+    if (entity == null) {
+      return null;
+    }
+    return entity.toWarehouse();
+  }
+
+  @Override
+  public Warehouse getById(Long id) {
+    if (id == null) {
+      return null;
+    }
+    DbWarehouse entity = findById(id);
+    if (entity == null) {
+      return null;
+    }
+    return entity.toWarehouse();
+  }
+
+  @Override
+  public long countActiveByLocation(String location) {
+    return count("location = ?1 and archivedAt is null", location);
+  }
+
+  @Override
+  public int totalCapacityByLocation(String location) {
+    return getEntityManager()
+        .createQuery(
+            "select coalesce(sum(w.capacity), 0) from DbWarehouse w where w.location = ?1 and w.archivedAt is null",
+            Integer.class)
+        .setParameter(1, location)
+        .getSingleResult();
   }
 }
