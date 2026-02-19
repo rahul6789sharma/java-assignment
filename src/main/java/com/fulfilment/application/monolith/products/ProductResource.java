@@ -54,6 +54,16 @@ public class ProductResource {
       throw new WebApplicationException(
           Response.status(422).entity("Id was invalidly set on request.").build());
     }
+    if (product.name == null || product.name.isBlank()) {
+      throw new WebApplicationException(
+          Response.status(422).entity("Product name is required.").build());
+    }
+    if (productRepository.find("name", product.name).firstResult() != null) {
+      throw new WebApplicationException(
+          Response.status(409)
+              .entity("Product with name '" + product.name + "' already exists.")
+              .build());
+    }
 
     productRepository.persist(product);
     return Response.ok(product).status(201).build();
