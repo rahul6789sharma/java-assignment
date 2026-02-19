@@ -18,8 +18,10 @@ public class WarehouseCreate201Filter implements ContainerResponseFilter {
   public void filter(
       ContainerRequestContext requestContext, ContainerResponseContext responseContext)
       throws IOException {
+    String path = requestContext.getUriInfo().getPath();
+    boolean isCreate = path != null && (path.equals("warehouse") || path.equals("/warehouse"));
     if ("POST".equals(requestContext.getMethod())
-        && "warehouse".equals(requestContext.getUriInfo().getPath())
+        && isCreate
         && responseContext.getStatus() == Response.Status.OK.getStatusCode()) {
       responseContext.setStatus(Response.Status.CREATED.getStatusCode());
     }
