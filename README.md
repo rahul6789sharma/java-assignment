@@ -82,6 +82,33 @@ Navigate to:
 
 Have fun, and join the team of contributors!
 
+## Testing and coverage
+
+- Run tests: `./mvnw test`
+- Run tests and coverage (JaCoCo, 80% minimum): `./mvnw verify`
+- Coverage report: `target/jacoco-report/index.html`
+- In-depth API tests (against a running app): `./scripts/api-test.sh http://localhost:8080`
+
+See [docs/TESTING.md](docs/TESTING.md) for test structure and coverage details.
+
+## Health checks
+
+When the app is running, health is exposed at:
+
+- **`/q/health`** – liveness and readiness (requires `quarkus-smallrye-health`).
+
+Useful for Kubernetes probes or CI smoke tests.
+
+## CI/CD
+
+- **CI** (`.github/workflows/ci.yml`): on push/PR to `main`/`master` – build, test, JaCoCo coverage, and code format check (`-Pquality`). JaCoCo report is uploaded as an artifact.
+- **CD**: on push to `main`/`master` – build and push Docker image to GitHub Container Registry.
+
+## Documentation
+
+- [CODE_ASSIGNMENT.md](CODE_ASSIGNMENT.md) – assignment tasks
+- [docs/TESTING.md](docs/TESTING.md) – unit/integration tests and coverage
+
 ## Troubleshooting
 
 Using **IntelliJ**, in case the generated code is not recognized and you have compilation failures, you may need to add `target/.../jaxrs` folder as "generated sources".
