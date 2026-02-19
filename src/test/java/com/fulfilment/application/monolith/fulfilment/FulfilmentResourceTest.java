@@ -1,6 +1,7 @@
 package com.fulfilment.application.monolith.fulfilment;
 
 import static io.restassured.RestAssured.given;
+
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,11 +20,7 @@ class FulfilmentResourceTest {
 
     @Test
     void validAssign_returns204() {
-      given()
-          .when()
-          .post("fulfilment/store/2/product/2/warehouse/2")
-          .then()
-          .statusCode(204);
+      given().when().post("fulfilment/store/2/product/2/warehouse/2").then().statusCode(204);
     }
   }
 
@@ -33,11 +30,7 @@ class FulfilmentResourceTest {
 
     @Test
     void unassign_returns204() {
-      given()
-          .when()
-          .delete("fulfilment/store/3/product/1/warehouse/2")
-          .then()
-          .statusCode(204);
+      given().when().delete("fulfilment/store/3/product/1/warehouse/2").then().statusCode(204);
     }
   }
 
@@ -47,22 +40,12 @@ class FulfilmentResourceTest {
 
     @Test
     void listByStoreId_returns200() {
-      given()
-          .queryParam("storeId", 1)
-          .when()
-          .get("fulfilment")
-          .then()
-          .statusCode(200);
+      given().queryParam("storeId", 1).when().get("fulfilment").then().statusCode(200);
     }
 
     @Test
     void listByWarehouseId_returns200() {
-      given()
-          .queryParam("warehouseId", 1)
-          .when()
-          .get("fulfilment")
-          .then()
-          .statusCode(200);
+      given().queryParam("warehouseId", 1).when().get("fulfilment").then().statusCode(200);
     }
   }
 }

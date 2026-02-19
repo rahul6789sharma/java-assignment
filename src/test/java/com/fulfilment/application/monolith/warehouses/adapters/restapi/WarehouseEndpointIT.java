@@ -17,8 +17,10 @@ public class WarehouseEndpointIT {
 
   @Test
   public void testSimpleListWarehouses() {
-    // GET /warehouse returns 200 and at least one seed warehouse (import.sql has MWH.001, MWH.012, MWH.023, MWH.034).
-    // When run with other tests, the DB may have been modified, so we only require one seed code to be present.
+    // GET /warehouse returns 200 and at least one seed warehouse (import.sql has MWH.001, MWH.012,
+    // MWH.023, MWH.034).
+    // When run with other tests, the DB may have been modified, so we only require one seed code to
+    // be present.
     given()
         .when()
         .get("warehouse")

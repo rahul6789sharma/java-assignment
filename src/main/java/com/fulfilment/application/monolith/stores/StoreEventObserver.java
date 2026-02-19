@@ -13,8 +13,7 @@ public class StoreEventObserver {
 
   @Inject LegacyStoreManagerGateway legacyStoreManagerGateway;
 
-  public void onStoreChanged(
-      @Observes(during = TransactionPhase.AFTER_SUCCESS) StoreEvent event) {
+  public void onStoreChanged(@Observes(during = TransactionPhase.AFTER_SUCCESS) StoreEvent event) {
     LOGGER.infov(
         "Store event received after transaction commit: action={0}, store={1}",
         event.getActionType(), event.getStore().name);

@@ -26,20 +26,15 @@ import org.mockito.ArgumentCaptor;
 @QuarkusTest
 public class WarehouseResourceImplTest {
 
-  @InjectMock
-  WarehouseRepository warehouseRepository;
+  @InjectMock WarehouseRepository warehouseRepository;
 
-  @InjectMock
-  CreateWarehouseOperation createWarehouseOperation;
+  @InjectMock CreateWarehouseOperation createWarehouseOperation;
 
-  @InjectMock
-  ReplaceWarehouseOperation replaceWarehouseOperation;
+  @InjectMock ReplaceWarehouseOperation replaceWarehouseOperation;
 
-  @InjectMock
-  ArchiveWarehouseOperation archiveWarehouseOperation;
+  @InjectMock ArchiveWarehouseOperation archiveWarehouseOperation;
 
-  @Inject
-  WarehouseResource warehouseResource;
+  @Inject WarehouseResource warehouseResource;
 
   private static com.warehouse.api.beans.Warehouse apiWarehouse(
       String buCode, String location, Integer capacity, Integer stock) {
@@ -130,7 +125,8 @@ public class WarehouseResourceImplTest {
   public void createANewWarehouseUnit_whenUseCaseThrowsDuplicateBuCode_exceptionPropagates() {
     var request = apiWarehouse("MWH.001", "AMSTERDAM-001", 30, 5);
     doThrow(new DuplicateBusinessUnitCodeException("MWH.001"))
-        .when(createWarehouseOperation).create(any(Warehouse.class));
+        .when(createWarehouseOperation)
+        .create(any(Warehouse.class));
 
     assertThrows(
         DuplicateBusinessUnitCodeException.class,
@@ -142,8 +138,7 @@ public class WarehouseResourceImplTest {
   @Test
   public void getAWarehouseUnitByID_throwsUnsupportedOperation() {
     assertThrows(
-        UnsupportedOperationException.class,
-        () -> warehouseResource.getAWarehouseUnitByID("1"));
+        UnsupportedOperationException.class, () -> warehouseResource.getAWarehouseUnitByID("1"));
   }
 
   @Test
@@ -162,7 +157,8 @@ public class WarehouseResourceImplTest {
     when(warehouseRepository.getById(999L)).thenReturn(null);
 
     assertThrows(
-        com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException.class,
+        com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException
+            .class,
         () -> warehouseResource.archiveAWarehouseUnitByID("999"));
 
     verify(warehouseRepository).getById(999L);

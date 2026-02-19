@@ -11,8 +11,7 @@ import org.jboss.logging.Logger;
 @Provider
 public class FulfilmentExceptionMapper implements ExceptionMapper<FulfilmentConstraintException> {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(FulfilmentExceptionMapper.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FulfilmentExceptionMapper.class.getName());
 
   @Inject ObjectMapper objectMapper;
 

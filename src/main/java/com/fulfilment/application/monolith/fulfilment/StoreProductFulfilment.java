@@ -17,9 +17,7 @@ import jakarta.persistence.UniqueConstraint;
     })
 public class StoreProductFulfilment {
 
-  @Id
-  @GeneratedValue
-  public Long id;
+  @Id @GeneratedValue public Long id;
 
   @Column(name = "store_id", nullable = false)
   public Long storeId;

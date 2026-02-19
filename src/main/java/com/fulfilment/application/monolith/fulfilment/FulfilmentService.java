@@ -14,8 +14,7 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class FulfilmentService {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(FulfilmentService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FulfilmentService.class.getName());
 
   private static final int MAX_WAREHOUSES_PER_PRODUCT_PER_STORE = 2;
   private static final int MAX_WAREHOUSES_PER_STORE = 3;
@@ -36,7 +35,8 @@ public class FulfilmentService {
   @Transactional
   public void assign(Long storeId, Long productId, Long warehouseId) {
     if (storeId == null || productId == null || warehouseId == null) {
-      throw new FulfilmentConstraintException("Store, product and warehouse identifiers are required");
+      throw new FulfilmentConstraintException(
+          "Store, product and warehouse identifiers are required");
     }
     Store store = Store.findById(storeId);
     if (store == null) {

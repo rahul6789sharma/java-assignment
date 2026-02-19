@@ -8,8 +8,7 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class LegacyStoreManagerGateway {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(LegacyStoreManagerGateway.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(LegacyStoreManagerGateway.class.getName());
 
   public void createStoreOnLegacySystem(Store store) {
     // Emulates sending store data to a legacy system by writing to a temp file.

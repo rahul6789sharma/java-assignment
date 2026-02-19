@@ -35,7 +35,9 @@ public class WarehouseResourceImpl implements WarehouseResource {
   @Override
   @Transactional
   public Warehouse createANewWarehouseUnit(@NotNull Warehouse data) {
-    LOGGER.infov("Creating warehouse unit: buCode={0}, location={1}", data.getBusinessUnitCode(), data.getLocation());
+    LOGGER.infov(
+        "Creating warehouse unit: buCode={0}, location={1}",
+        data.getBusinessUnitCode(), data.getLocation());
 
     var warehouse = toDomainModel(data);
     createWarehouseOperation.create(warehouse);
@@ -72,7 +74,8 @@ public class WarehouseResourceImpl implements WarehouseResource {
   @Transactional
   public Warehouse replaceTheCurrentActiveWarehouse(
       String businessUnitCode, @NotNull Warehouse data) {
-    LOGGER.infov("Replacing warehouse: buCode={0}, location={1}", businessUnitCode, data.getLocation());
+    LOGGER.infov(
+        "Replacing warehouse: buCode={0}, location={1}", businessUnitCode, data.getLocation());
 
     var newWarehouse = toDomainModel(data);
     newWarehouse.businessUnitCode = businessUnitCode;

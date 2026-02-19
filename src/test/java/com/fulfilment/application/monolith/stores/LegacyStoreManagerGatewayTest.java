@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class LegacyStoreManagerGatewayTest {
 
-  @Inject
-  LegacyStoreManagerGateway legacyStoreManagerGateway;
+  @Inject LegacyStoreManagerGateway legacyStoreManagerGateway;
 
   private static Store store(String name, int quantityProductsInStock) {
     Store s = new Store(name);

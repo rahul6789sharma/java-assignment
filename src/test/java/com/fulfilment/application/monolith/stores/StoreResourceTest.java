@@ -46,12 +46,7 @@ public class StoreResourceTest {
 
   @Test
   public void getSingle_whenNotExists_returns404() {
-    given()
-        .when()
-        .get("store/99999")
-        .then()
-        .statusCode(404)
-        .body(containsString("does not exist"));
+    given().when().get("store/99999").then().statusCode(404).body(containsString("does not exist"));
   }
 
   // --- POST create ---
@@ -107,7 +102,8 @@ public class StoreResourceTest {
 
   @Test
   public void testLegacyGatewayNotCalledOnRollback() {
-    // "TONSTAD" already exists in import.sql → duplicate name → 409 (or 500 if constraint fires). No commit → legacy not called.
+    // "TONSTAD" already exists in import.sql → duplicate name → 409 (or 500 if constraint fires).
+    // No commit → legacy not called.
     given()
         .contentType("application/json")
         .body("{\"name\": \"TONSTAD\", \"quantityProductsInStock\": 99}")
@@ -210,11 +206,7 @@ public class StoreResourceTest {
                     .extract()
                     .path("id"))
             .longValue();
-    given()
-        .when()
-        .delete("store/" + id)
-        .then()
-        .statusCode(204);
+    given().when().delete("store/" + id).then().statusCode(204);
   }
 
   @Test

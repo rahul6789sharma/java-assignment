@@ -31,8 +31,8 @@ public class StoreProductFulfilmentRepository implements PanacheRepository<Store
 
   public StoreProductFulfilment findByStoreAndProductAndWarehouse(
       Long storeId, Long productId, Long warehouseId) {
-    return find("storeId = ?1 and productId = ?2 and warehouseId = ?3",
-            storeId, productId, warehouseId)
+    return find(
+            "storeId = ?1 and productId = ?2 and warehouseId = ?3", storeId, productId, warehouseId)
         .firstResult();
   }
 

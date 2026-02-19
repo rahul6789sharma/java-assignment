@@ -25,14 +25,11 @@ import org.mockito.Mockito;
 @QuarkusTest
 public class CreateWarehouseUseCaseTest {
 
-  @InjectMock
-  WarehouseStore warehouseStore;
+  @InjectMock WarehouseStore warehouseStore;
 
-  @InjectMock
-  LocationResolver locationResolver;
+  @InjectMock LocationResolver locationResolver;
 
-  @Inject
-  CreateWarehouseUseCase useCase;
+  @Inject CreateWarehouseUseCase useCase;
 
   private Warehouse buildWarehouse(String buCode, String location, int capacity, int stock) {
     Warehouse warehouse = new Warehouse();

@@ -124,11 +124,7 @@ public class ProductEndpointTest {
                     .extract()
                     .path("id"))
             .longValue();
-    given()
-        .when()
-        .delete(PATH + "/" + id)
-        .then()
-        .statusCode(204);
+    given().when().delete(PATH + "/" + id).then().statusCode(204);
   }
 
   @Test

@@ -20,8 +20,7 @@ import org.jboss.logging.Logger;
 @Provider
 public class WarehouseExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(WarehouseExceptionMapper.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(WarehouseExceptionMapper.class.getName());
 
   @Inject ObjectMapper objectMapper;
 

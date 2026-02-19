@@ -79,8 +79,7 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
       int capacityAfterReplace =
           totalCapacityAtNewLocation - current.capacity + newWarehouse.capacity;
       if (capacityAfterReplace > location.maxCapacity) {
-        throw new CapacityExceededException(
-            capacityAfterReplace, location.maxCapacity);
+        throw new CapacityExceededException(capacityAfterReplace, location.maxCapacity);
       }
     } else {
       if (totalCapacityAtNewLocation + newWarehouse.capacity > location.maxCapacity) {

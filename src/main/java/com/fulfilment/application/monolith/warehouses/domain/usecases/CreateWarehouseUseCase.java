@@ -43,13 +43,15 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
     // Location Validation: must be an existing valid location (assignment constraint)
     Location location = locationResolver.resolveByIdentifier(warehouse.location);
 
-    // Warehouse Creation Feasibility: max number of warehouses at location not reached (assignment constraint)
+    // Warehouse Creation Feasibility: max number of warehouses at location not reached (assignment
+    // constraint)
     long activeCount = warehouseStore.countActiveByLocation(warehouse.location);
     if (activeCount >= location.maxNumberOfWarehouses) {
       throw new MaxWarehousesReachedException(warehouse.location);
     }
 
-    // Capacity and Stock Validation: capacity must not exceed location max; warehouse must handle stock (assignment constraint)
+    // Capacity and Stock Validation: capacity must not exceed location max; warehouse must handle
+    // stock (assignment constraint)
     int currentTotalCapacity = warehouseStore.totalCapacityByLocation(warehouse.location);
     if (currentTotalCapacity + warehouse.capacity > location.maxCapacity) {
       throw new CapacityExceededException(
@@ -69,8 +71,8 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
   }
 
   /**
-   * Validates required fields and basic capacity/stock rules.
-   * Throws {@link InvalidWarehouseException} if any check fails.
+   * Validates required fields and basic capacity/stock rules. Throws {@link
+   * InvalidWarehouseException} if any check fails.
    */
   private void validateRequiredFields(Warehouse warehouse) {
     if (warehouse.businessUnitCode == null || warehouse.businessUnitCode.isBlank()) {

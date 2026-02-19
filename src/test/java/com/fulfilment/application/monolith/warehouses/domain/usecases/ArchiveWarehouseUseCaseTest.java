@@ -19,11 +19,9 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 public class ArchiveWarehouseUseCaseTest {
 
-  @InjectMock
-  WarehouseStore warehouseStore;
+  @InjectMock WarehouseStore warehouseStore;
 
-  @Inject
-  ArchiveWarehouseUseCase useCase;
+  @Inject ArchiveWarehouseUseCase useCase;
 
   private static Warehouse warehouse(String buCode, String location, int capacity, int stock) {
     var w = new Warehouse();

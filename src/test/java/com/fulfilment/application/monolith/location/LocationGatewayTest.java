@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 public class LocationGatewayTest {
 
-  @Inject
-  LocationGateway locationGateway;
+  @Inject LocationGateway locationGateway;
 
   @Test
   public void testWhenResolveExistingLocationShouldReturn() {
@@ -37,21 +36,18 @@ public class LocationGatewayTest {
   @Test
   public void testWhenResolveNonExistentLocationShouldThrowNotFoundException() {
     assertThrows(
-        LocationNotFoundException.class,
-        () -> locationGateway.resolveByIdentifier("UNKNOWN-999"));
+        LocationNotFoundException.class, () -> locationGateway.resolveByIdentifier("UNKNOWN-999"));
   }
 
   @Test
   public void testWhenResolveNullIdentifierShouldThrowInvalidException() {
     assertThrows(
-        LocationIdentifierInvalidException.class,
-        () -> locationGateway.resolveByIdentifier(null));
+        LocationIdentifierInvalidException.class, () -> locationGateway.resolveByIdentifier(null));
   }
 
   @Test
   public void testWhenResolveBlankIdentifierShouldThrowInvalidException() {
     assertThrows(
-        LocationIdentifierInvalidException.class,
-        () -> locationGateway.resolveByIdentifier("  "));
+        LocationIdentifierInvalidException.class, () -> locationGateway.resolveByIdentifier("  "));
   }
 }
