@@ -2,7 +2,6 @@ package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,21 +13,22 @@ import com.fulfilment.application.monolith.warehouses.domain.models.Location;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
-import org.junit.jupiter.api.BeforeEach;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+@QuarkusTest
 public class ReplaceWarehouseUseCaseTest {
 
-  private WarehouseStore warehouseStore;
-  private LocationResolver locationResolver;
-  private ReplaceWarehouseUseCase useCase;
+  @InjectMock
+  WarehouseStore warehouseStore;
 
-  @BeforeEach
-  void setUp() {
-    warehouseStore = mock(WarehouseStore.class);
-    locationResolver = mock(LocationResolver.class);
-    useCase = new ReplaceWarehouseUseCase(warehouseStore, locationResolver);
-  }
+  @InjectMock
+  LocationResolver locationResolver;
+
+  @Inject
+  ReplaceWarehouseUseCase useCase;
 
   private static Warehouse warehouse(String buCode, String location, int capacity, int stock) {
     var w = new Warehouse();

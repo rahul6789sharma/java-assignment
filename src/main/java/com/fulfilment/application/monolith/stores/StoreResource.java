@@ -14,6 +14,7 @@ import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -39,10 +40,11 @@ public class StoreResource {
 
   @GET
   @Path("{id}")
-  public Store getSingle(Long id) {
+  public Store getSingle(@PathParam("id") Long id) {
     Store entity = Store.findById(id);
     if (entity == null) {
-      throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
+      throw new WebApplicationException(
+          Response.status(404).entity("Store with id of " + id + " does not exist.").build());
     }
     return entity;
   }
@@ -51,14 +53,18 @@ public class StoreResource {
   @Transactional
   public Response create(Store store) {
     if (store.id != null) {
-      throw new WebApplicationException("Id was invalidly set on request.", 422);
+      throw new WebApplicationException(
+          Response.status(422).entity("Id was invalidly set on request.").build());
     }
     if (store.name == null || store.name.isBlank()) {
-      throw new WebApplicationException("Store name is required.", 422);
+      throw new WebApplicationException(
+          Response.status(422).entity("Store name is required.").build());
     }
     if (Store.find("name", store.name).firstResult() != null) {
       throw new WebApplicationException(
-          "Store with name '" + store.name + "' already exists.", 409);
+          Response.status(409)
+              .entity("Store with name '" + store.name + "' already exists.")
+              .build());
     }
 
     store.persist();
@@ -71,15 +77,17 @@ public class StoreResource {
   @PUT
   @Path("{id}")
   @Transactional
-  public Store update(Long id, Store updatedStore) {
+  public Store update(@PathParam("id") Long id, Store updatedStore) {
     if (updatedStore.name == null) {
-      throw new WebApplicationException("Store Name was not set on request.", 422);
+      throw new WebApplicationException(
+          Response.status(422).entity("Store Name was not set on request.").build());
     }
 
     Store entity = Store.findById(id);
 
     if (entity == null) {
-      throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
+      throw new WebApplicationException(
+          Response.status(404).entity("Store with id of " + id + " does not exist.").build());
     }
 
     entity.name = updatedStore.name;
@@ -93,15 +101,17 @@ public class StoreResource {
   @PATCH
   @Path("{id}")
   @Transactional
-  public Store patch(Long id, Store updatedStore) {
+  public Store patch(@PathParam("id") Long id, Store updatedStore) {
     if (updatedStore.name == null) {
-      throw new WebApplicationException("Store Name was not set on request.", 422);
+      throw new WebApplicationException(
+          Response.status(422).entity("Store Name was not set on request.").build());
     }
 
     Store entity = Store.findById(id);
 
     if (entity == null) {
-      throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
+      throw new WebApplicationException(
+          Response.status(404).entity("Store with id of " + id + " does not exist.").build());
     }
 
     if (entity.name != null) {
@@ -120,10 +130,11 @@ public class StoreResource {
   @DELETE
   @Path("{id}")
   @Transactional
-  public Response delete(Long id) {
+  public Response delete(@PathParam("id") Long id) {
     Store entity = Store.findById(id);
     if (entity == null) {
-      throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
+      throw new WebApplicationException(
+          Response.status(404).entity("Store with id of " + id + " does not exist.").build());
     }
     entity.delete();
     return Response.status(204).build();

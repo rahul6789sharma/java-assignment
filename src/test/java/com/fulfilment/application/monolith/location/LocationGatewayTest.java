@@ -6,11 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.LocationIdentifierInvalidException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.LocationNotFoundException;
 import com.fulfilment.application.monolith.warehouses.domain.models.Location;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+@QuarkusTest
 public class LocationGatewayTest {
 
-  private final LocationGateway locationGateway = new LocationGateway();
+  @Inject
+  LocationGateway locationGateway;
 
   @Test
   public void testWhenResolveExistingLocationShouldReturn() {

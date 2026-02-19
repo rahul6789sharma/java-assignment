@@ -4,27 +4,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@QuarkusTest
 public class ArchiveWarehouseUseCaseTest {
 
-  private WarehouseStore warehouseStore;
-  private ArchiveWarehouseUseCase useCase;
+  @InjectMock
+  WarehouseStore warehouseStore;
 
-  @BeforeEach
-  void setUp() {
-    warehouseStore = mock(WarehouseStore.class);
-    useCase = new ArchiveWarehouseUseCase(warehouseStore);
-  }
+  @Inject
+  ArchiveWarehouseUseCase useCase;
 
   private static Warehouse warehouse(String buCode, String location, int capacity, int stock) {
     var w = new Warehouse();
