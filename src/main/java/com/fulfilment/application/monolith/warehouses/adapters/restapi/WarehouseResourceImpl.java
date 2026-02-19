@@ -47,8 +47,12 @@ public class WarehouseResourceImpl implements WarehouseResource {
 
   @Override
   public Warehouse getAWarehouseUnitByID(String id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getAWarehouseUnitByID'");
+    Long warehouseId = parseWarehouseId(id);
+    var warehouse = warehouseRepository.getById(warehouseId);
+    if (warehouse == null) {
+      throw new WarehouseNotFoundException(warehouseId);
+    }
+    return toWarehouseResponse(warehouse);
   }
 
   @Override

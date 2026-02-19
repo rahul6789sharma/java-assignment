@@ -27,18 +27,18 @@ public class WarehouseExceptionMapper implements ExceptionMapper<RuntimeExceptio
   @Override
   public Response toResponse(RuntimeException exception) {
     int code = mapToHttpStatus(exception);
-
     if (code == 0) {
-      // Not a domain exception we handle — let default mappers deal with it
-      return null;
+      code = 500;
+      LOGGER.error("Warehouse API unexpected error", exception);
+    } else {
+      LOGGER.warnv("Warehouse API error: {0}", exception.getMessage());
     }
-
-    LOGGER.warnv("Warehouse API error: {0}", exception.getMessage());
 
     ObjectNode errorJson = objectMapper.createObjectNode();
     errorJson.put("exceptionType", exception.getClass().getSimpleName());
     errorJson.put("code", code);
-    errorJson.put("error", exception.getMessage());
+    errorJson.put(
+        "error", exception.getMessage() != null ? exception.getMessage() : exception.toString());
 
     return Response.status(code).entity(errorJson).build();
   }

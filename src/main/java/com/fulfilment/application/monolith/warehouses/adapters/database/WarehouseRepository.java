@@ -96,11 +96,13 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public int totalCapacityByLocation(String location) {
-    return getEntityManager()
-        .createQuery(
-            "select coalesce(sum(w.capacity), 0) from DbWarehouse w where w.location = ?1 and w.archivedAt is null",
-            Integer.class)
-        .setParameter(1, location)
-        .getSingleResult();
+    Long sum =
+        getEntityManager()
+            .createQuery(
+                "select coalesce(sum(w.capacity), 0) from DbWarehouse w where w.location = ?1 and w.archivedAt is null",
+                Long.class)
+            .setParameter(1, location)
+            .getSingleResult();
+    return sum != null ? sum.intValue() : 0;
   }
 }

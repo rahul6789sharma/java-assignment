@@ -50,6 +50,12 @@
             <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>
 
+        <!-- Health checks (e.g. /q/health for CI/K8s) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+
         <!-- Testing: -->
         <dependency>
             <groupId>io.quarkus</groupId>

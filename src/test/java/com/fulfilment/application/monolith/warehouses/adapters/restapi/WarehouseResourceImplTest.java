@@ -136,9 +136,38 @@ public class WarehouseResourceImplTest {
   }
 
   @Test
-  public void getAWarehouseUnitByID_throwsUnsupportedOperation() {
+  public void getAWarehouseUnitByID_returnsWarehouseWhenFound() {
+    var warehouse = domainWarehouse("MWH.001", "ZWOLLE-001", 100, 10);
+    when(warehouseRepository.getById(1L)).thenReturn(warehouse);
+
+    var response = warehouseResource.getAWarehouseUnitByID("1");
+
+    assertNotNull(response);
+    assertEquals("MWH.001", response.getBusinessUnitCode());
+    assertEquals("ZWOLLE-001", response.getLocation());
+    assertEquals(100, response.getCapacity());
+    assertEquals(10, response.getStock());
+    verify(warehouseRepository).getById(1L);
+  }
+
+  @Test
+  public void getAWarehouseUnitByID_throwsWhenWarehouseNotFound() {
+    when(warehouseRepository.getById(999L)).thenReturn(null);
+
     assertThrows(
-        UnsupportedOperationException.class, () -> warehouseResource.getAWarehouseUnitByID("1"));
+        com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException
+            .class,
+        () -> warehouseResource.getAWarehouseUnitByID("999"));
+
+    verify(warehouseRepository).getById(999L);
+  }
+
+  @Test
+  public void getAWarehouseUnitByID_throwsWhenIdIsNotNumeric() {
+    assertThrows(
+        com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException
+            .class,
+        () -> warehouseResource.getAWarehouseUnitByID("abc"));
   }
 
   @Test

@@ -114,13 +114,8 @@ public class StoreResource {
           Response.status(404).entity("Store with id of " + id + " does not exist.").build());
     }
 
-    if (entity.name != null) {
-      entity.name = updatedStore.name;
-    }
-
-    if (entity.quantityProductsInStock != 0) {
-      entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
-    }
+    entity.name = updatedStore.name;
+    entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
 
     storeEvent.fire(new StoreEvent(entity, StoreEvent.ActionType.UPDATED));
 
