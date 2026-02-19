@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 class FulfilmentServiceTest {
 
   @Inject FulfilmentService fulfilmentService;
+  @Inject FulfilmentTestDataHelper testData;
 
   @Nested
   @DisplayName("Assign and list")
@@ -77,13 +78,18 @@ class FulfilmentServiceTest {
 
     @Test
     void fourthDistinctWarehouseForStore_throws() {
+      Long warehouse4Id = testData.createWarehouse4();
+
       fulfilmentService.assign(1L, 1L, 1L);
       fulfilmentService.assign(1L, 2L, 2L);
       fulfilmentService.assign(1L, 3L, 3L);
       var ex =
           assertThrows(
-              FulfilmentConstraintException.class, () -> fulfilmentService.assign(1L, 1L, 4L));
-      assertTrue(ex.getMessage().contains("at most 3"));
+              FulfilmentConstraintException.class,
+              () -> fulfilmentService.assign(1L, 1L, warehouse4Id));
+      assertTrue(
+          ex.getMessage() != null && ex.getMessage().contains("Store can be fulfilled"),
+          "Expected message about store warehouse limit, got: " + ex.getMessage());
     }
   }
 
@@ -93,14 +99,17 @@ class FulfilmentServiceTest {
 
     @Test
     void sixthProductTypeForWarehouse_throws() {
+      long[] productIds = testData.createProducts4_5_6();
+      long id4 = productIds[0], id5 = productIds[1], id6 = productIds[2];
+
       fulfilmentService.assign(1L, 1L, 1L);
       fulfilmentService.assign(2L, 2L, 1L);
       fulfilmentService.assign(3L, 3L, 1L);
-      fulfilmentService.assign(1L, 4L, 1L);
-      fulfilmentService.assign(2L, 5L, 1L);
+      fulfilmentService.assign(1L, id4, 1L);
+      fulfilmentService.assign(2L, id5, 1L);
       var ex =
           assertThrows(
-              FulfilmentConstraintException.class, () -> fulfilmentService.assign(3L, 6L, 1L));
+              FulfilmentConstraintException.class, () -> fulfilmentService.assign(3L, id6, 1L));
       assertTrue(ex.getMessage().contains("at most 5"));
     }
   }

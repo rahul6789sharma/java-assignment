@@ -37,7 +37,8 @@ public class WarehouseExceptionMapper implements ExceptionMapper<RuntimeExceptio
     ObjectNode errorJson = objectMapper.createObjectNode();
     errorJson.put("exceptionType", exception.getClass().getSimpleName());
     errorJson.put("code", code);
-    errorJson.put("error", exception.getMessage() != null ? exception.getMessage() : exception.toString());
+    errorJson.put(
+        "error", exception.getMessage() != null ? exception.getMessage() : exception.toString());
 
     return Response.status(code).entity(errorJson).build();
   }

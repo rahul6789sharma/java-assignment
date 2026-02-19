@@ -3,6 +3,7 @@ package com.fulfilment.application.monolith.fulfilment;
 import static io.restassured.RestAssured.given;
 
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,12 @@ class FulfilmentResourceTest {
 
     @Test
     void validAssign_returns204() {
-      given().when().post("fulfilment/store/2/product/2/warehouse/2").then().statusCode(204);
+      given()
+          .contentType(MediaType.APPLICATION_JSON)
+          .when()
+          .post("fulfilment/store/1/product/1/warehouse/1")
+          .then()
+          .statusCode(204);
     }
   }
 
