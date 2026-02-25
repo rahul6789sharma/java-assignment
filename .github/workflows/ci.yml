@@ -20,13 +20,13 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: quarkus_test
-          POSTGRES_PASSWORD: quarkus_test
-          POSTGRES_DB: quarkus_test
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U quarkus_test"
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -44,9 +44,9 @@ jobs:
 
       - name: Build, test, coverage and format check
         env:
-          QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://localhost:5432/quarkus_test
-          QUARKUS_DATASOURCE_USERNAME: quarkus_test
-          QUARKUS_DATASOURCE_PASSWORD: quarkus_test
+          QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://${{ vars.POSTGRES_HOST }}:${{ vars.POSTGRES_PORT }}/${{ vars.POSTGRES_DB }}
+          QUARKUS_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+          QUARKUS_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: ./mvnw verify -B -Pquality
 
       - name: Upload JaCoCo report
