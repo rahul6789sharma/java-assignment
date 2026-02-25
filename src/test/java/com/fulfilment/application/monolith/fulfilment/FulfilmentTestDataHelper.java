@@ -29,6 +29,20 @@ public class FulfilmentTestDataHelper {
     return w.id;
   }
 
+  /** Creates an archived warehouse for tests that assert "Cannot assign archived warehouse". */
+  @Transactional
+  public Long createArchivedWarehouse() {
+    DbWarehouse w = new DbWarehouse();
+    w.businessUnitCode = "MWH.ARCHIVED";
+    w.location = "ZWOLLE-001";
+    w.capacity = 20;
+    w.stock = 0;
+    w.createdAt = LocalDateTime.of(2023, 6, 1, 0, 0);
+    w.archivedAt = LocalDateTime.of(2024, 6, 1, 0, 0);
+    warehouseRepository.persist(w);
+    return w.id;
+  }
+
   @Transactional
   public long[] createProducts4_5_6() {
     Product p4 = new Product("PROD4");

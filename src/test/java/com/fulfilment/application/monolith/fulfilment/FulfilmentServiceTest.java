@@ -21,11 +21,49 @@ class FulfilmentServiceTest {
   class AssignAndList {
 
     @Test
+    void assign_whenAnyIdNull_throws() {
+      var ex =
+          assertThrows(
+              FulfilmentConstraintException.class, () -> fulfilmentService.assign(null, 1L, 1L));
+      assertTrue(ex.getMessage().contains("required"));
+      assertThrows(
+          FulfilmentConstraintException.class, () -> fulfilmentService.assign(1L, null, 1L));
+      assertThrows(
+          FulfilmentConstraintException.class, () -> fulfilmentService.assign(1L, 1L, null));
+    }
+
+    @Test
     void assign_whenStoreNotFound_throws() {
       var ex =
           assertThrows(
               FulfilmentConstraintException.class, () -> fulfilmentService.assign(999L, 1L, 1L));
       assertTrue(ex.getMessage().contains("Store not found"));
+    }
+
+    @Test
+    void assign_whenProductNotFound_throws() {
+      var ex =
+          assertThrows(
+              FulfilmentConstraintException.class, () -> fulfilmentService.assign(1L, 999L, 1L));
+      assertTrue(ex.getMessage().contains("Product not found"));
+    }
+
+    @Test
+    void assign_whenWarehouseNotFound_throws() {
+      var ex =
+          assertThrows(
+              FulfilmentConstraintException.class, () -> fulfilmentService.assign(1L, 1L, 999L));
+      assertTrue(ex.getMessage().contains("Warehouse not found"));
+    }
+
+    @Test
+    void assign_whenWarehouseArchived_throws() {
+      Long archivedWarehouseId = testData.createArchivedWarehouse();
+      var ex =
+          assertThrows(
+              FulfilmentConstraintException.class,
+              () -> fulfilmentService.assign(1L, 1L, archivedWarehouseId));
+      assertTrue(ex.getMessage().contains("Cannot assign archived warehouse"));
     }
 
     @Test

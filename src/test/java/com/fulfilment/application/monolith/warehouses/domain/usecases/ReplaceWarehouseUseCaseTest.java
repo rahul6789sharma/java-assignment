@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.CapacityExceededException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.InsufficientCapacityException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.InvalidWarehouseException;
+import com.fulfilment.application.monolith.warehouses.domain.exceptions.LocationNotFoundException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.MaxWarehousesReachedException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.StockMismatchException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException;
@@ -95,6 +96,19 @@ public class ReplaceWarehouseUseCaseTest {
     when(warehouseStore.findActiveByBusinessUnitCode("MWH.001")).thenReturn(null);
 
     assertThrows(WarehouseNotFoundException.class, () -> useCase.replace(newWh));
+    verify(warehouseStore, never()).update(any());
+    verify(warehouseStore, never()).create(any());
+  }
+
+  @Test
+  void replace_whenLocationNotFound_throwsLocationNotFoundException() {
+    Warehouse current = warehouse("MWH.001", "ZWOLLE-001", 100, 50);
+    Warehouse newWh = warehouse("MWH.001", "UNKNOWN-LOC", 100, 50);
+    when(warehouseStore.findActiveByBusinessUnitCode("MWH.001")).thenReturn(current);
+    when(locationResolver.resolveByIdentifier("UNKNOWN-LOC"))
+        .thenThrow(new LocationNotFoundException("UNKNOWN-LOC"));
+
+    assertThrows(LocationNotFoundException.class, () -> useCase.replace(newWh));
     verify(warehouseStore, never()).update(any());
     verify(warehouseStore, never()).create(any());
   }
