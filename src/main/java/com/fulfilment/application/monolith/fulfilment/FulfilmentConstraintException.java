@@ -1,8 +1,12 @@
 package com.fulfilment.application.monolith.fulfilment;
 
-public class FulfilmentConstraintException extends RuntimeException {
+import com.fulfilment.application.monolith.exception.BusinessException;
+
+public class FulfilmentConstraintException extends BusinessException {
+
+  public static final String ERROR_CODE = "FULFILMENT_CONSTRAINT";
 
   public FulfilmentConstraintException(String message) {
-    super(message);
+    super(message, ERROR_CODE, 400);
   }
 }

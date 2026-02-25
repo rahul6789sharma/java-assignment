@@ -111,4 +111,32 @@ Useful for Kubernetes probes or CI smoke tests.
 
 ## Troubleshooting
 
+### IntelliJ and generated sources
+
 Using **IntelliJ**, in case the generated code is not recognized and you have compilation failures, you may need to add `target/.../jaxrs` folder as "generated sources".
+
+### Tests and Docker Desktop
+
+Tests use **Quarkus Dev Services**, which starts PostgreSQL via **Testcontainers** and requires a working Docker environment.
+
+#### Docker Version Compatibility Issue
+
+While running the tests, I encountered an issue where Testcontainers failed to connect to Docker with errors like:
+- `BadRequestException (Status 400)`
+- `"Could not find a valid Docker environment. Please check configuration"`
+
+After investigation, I found that **Docker Desktop 4.52+** (which uses Docker Engine 29.x with API version 1.53) is incompatible with Testcontainers 1.x that Quarkus 3.13.3 uses. The root cause is a Docker API version mismatch - Testcontainers sends requests in an older API format that Docker 29.x rejects.
+
+#### Solution
+
+Downgrade Docker Desktop to version **4.28.0 - 4.40.0** (Docker Engine 25.x, API 1.44).
+
+Download links for Docker Desktop 4.28.0:
+- Apple Silicon (M1/M2/M3): https://desktop.docker.com/mac/main/arm64/139021/Docker.dmg
+- Intel Mac: https://desktop.docker.com/mac/main/amd64/139021/Docker.dmg
+
+For other versions, check the [Docker Desktop release notes](https://docs.docker.com/desktop/release-notes/).
+
+#### References
+- [Testcontainers issue #11235 - Docker Engine 29 incompatibility](https://github.com/testcontainers/testcontainers-java/issues/11235)
+- [Testcontainers supported environments](https://java.testcontainers.org/supported_docker_environment/)

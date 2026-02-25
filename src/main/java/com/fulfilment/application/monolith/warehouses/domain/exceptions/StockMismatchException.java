@@ -1,12 +1,18 @@
 package com.fulfilment.application.monolith.warehouses.domain.exceptions;
 
-public class StockMismatchException extends RuntimeException {
+import com.fulfilment.application.monolith.exception.BusinessException;
+
+public class StockMismatchException extends BusinessException {
+
+  public static final String ERROR_CODE = "STOCK_MISMATCH";
 
   public StockMismatchException(int newStock, int expectedStock) {
     super(
         "New warehouse stock "
             + newStock
             + " does not match the expected stock of "
-            + expectedStock);
+            + expectedStock,
+        ERROR_CODE,
+        400);
   }
 }

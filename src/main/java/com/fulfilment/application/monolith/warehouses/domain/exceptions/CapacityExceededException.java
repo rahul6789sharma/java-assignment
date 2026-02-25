@@ -1,6 +1,10 @@
 package com.fulfilment.application.monolith.warehouses.domain.exceptions;
 
-public class CapacityExceededException extends RuntimeException {
+import com.fulfilment.application.monolith.exception.BusinessException;
+
+public class CapacityExceededException extends BusinessException {
+
+  public static final String ERROR_CODE = "CAPACITY_EXCEEDED";
 
   public CapacityExceededException(int capacity, int maxCapacity) {
     super(
@@ -8,6 +12,8 @@ public class CapacityExceededException extends RuntimeException {
             + capacity
             + " exceeds maximum allowed capacity "
             + maxCapacity
-            + " for this location");
+            + " for this location",
+        ERROR_CODE,
+        400);
   }
 }
