@@ -32,7 +32,7 @@ Tests run against an embedded or Testcontainers PostgreSQL when needed (Quarkus 
 | **Warehouse – Use cases** | `CreateWarehouseUseCaseTest` | Create: valid, duplicate BU, invalid location, max warehouses, capacity/stock (positive + constraints). |
 | | `ReplaceWarehouseUseCaseTest` | Replace: valid, not found, capacity/stock validations. |
 | | `ArchiveWarehouseUseCaseTest` | Archive: success, not found. |
-| **Warehouse – DB** | `WarehouseRepositoryTest` | Repository behaviour with DB. |
+| **Warehouse – DB** | `WarehouseRepositoryTest` | CRUD with DB; **archivedAt filter**: getAll/getById/findByBusinessUnitCode exclude archived warehouses. |
 | **Fulfilment** | `FulfilmentServiceTest` | Assign/unassign, list; store/product/warehouse not found; max 2 wh per product per store, max 3 wh per store, max 5 product types per warehouse (positive + constraints). |
 | **Fulfilment** | `FulfilmentResourceTest` | REST: assign (204), unassign, list; Content-Type for assign. |
 

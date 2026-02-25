@@ -59,11 +59,12 @@ class FulfilmentServiceTest {
     @Test
     void assign_whenWarehouseArchived_throws() {
       Long archivedWarehouseId = testData.createArchivedWarehouse();
+      // Repository getById returns only active warehouses; archived are treated as not found
       var ex =
           assertThrows(
               FulfilmentConstraintException.class,
               () -> fulfilmentService.assign(1L, 1L, archivedWarehouseId));
-      assertTrue(ex.getMessage().contains("Cannot assign archived warehouse"));
+      assertTrue(ex.getMessage().contains("Warehouse not found"), "Got: " + ex.getMessage());
     }
 
     @Test
