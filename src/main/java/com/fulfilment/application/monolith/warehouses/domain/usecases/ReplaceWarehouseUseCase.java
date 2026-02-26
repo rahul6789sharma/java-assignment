@@ -2,7 +2,6 @@ package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.CapacityExceededException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.InsufficientCapacityException;
-import com.fulfilment.application.monolith.warehouses.domain.exceptions.InvalidWarehouseException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.MaxWarehousesReachedException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.StockMismatchException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.WarehouseNotFoundException;
@@ -11,6 +10,7 @@ import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+import com.fulfilment.application.monolith.warehouses.domain.validators.WarehouseValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
 import org.jboss.logging.Logger;
@@ -22,10 +22,15 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
 
   private final WarehouseStore warehouseStore;
   private final LocationResolver locationResolver;
+  private final WarehouseValidator warehouseValidator;
 
-  public ReplaceWarehouseUseCase(WarehouseStore warehouseStore, LocationResolver locationResolver) {
+  public ReplaceWarehouseUseCase(
+      WarehouseStore warehouseStore,
+      LocationResolver locationResolver,
+      WarehouseValidator warehouseValidator) {
     this.warehouseStore = warehouseStore;
     this.locationResolver = locationResolver;
+    this.warehouseValidator = warehouseValidator;
   }
 
   @Override
@@ -37,7 +42,7 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
         newWarehouse.capacity,
         newWarehouse.stock);
 
-    validateRequiredFields(newWarehouse);
+    warehouseValidator.validateRequiredFields(newWarehouse);
 
     // Find current active warehouse by business unit code (must exist to replace)
     Warehouse current = warehouseStore.findActiveByBusinessUnitCode(newWarehouse.businessUnitCode);
@@ -101,26 +106,5 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
     warehouseStore.create(newWarehouse);
 
     LOGGER.infov("Warehouse replaced successfully: {0}", newWarehouse.businessUnitCode);
-  }
-
-  private void validateRequiredFields(Warehouse warehouse) {
-    if (warehouse.businessUnitCode == null || warehouse.businessUnitCode.isBlank()) {
-      throw new InvalidWarehouseException("Business unit code is required");
-    }
-    if (warehouse.location == null || warehouse.location.isBlank()) {
-      throw new InvalidWarehouseException("Location is required");
-    }
-    if (warehouse.capacity == null) {
-      throw new InvalidWarehouseException("Capacity is required");
-    }
-    if (warehouse.stock == null) {
-      throw new InvalidWarehouseException("Stock is required");
-    }
-    if (warehouse.capacity <= 0) {
-      throw new InvalidWarehouseException("Capacity must be positive");
-    }
-    if (warehouse.stock < 0) {
-      throw new InvalidWarehouseException("Stock cannot be negative");
-    }
   }
 }

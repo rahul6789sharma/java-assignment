@@ -2,13 +2,13 @@ package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.CapacityExceededException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.DuplicateBusinessUnitCodeException;
-import com.fulfilment.application.monolith.warehouses.domain.exceptions.InvalidWarehouseException;
 import com.fulfilment.application.monolith.warehouses.domain.exceptions.MaxWarehousesReachedException;
 import com.fulfilment.application.monolith.warehouses.domain.models.Location;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+import com.fulfilment.application.monolith.warehouses.domain.validators.WarehouseValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
 import org.jboss.logging.Logger;
@@ -20,10 +20,15 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
 
   private final WarehouseStore warehouseStore;
   private final LocationResolver locationResolver;
+  private final WarehouseValidator warehouseValidator;
 
-  public CreateWarehouseUseCase(WarehouseStore warehouseStore, LocationResolver locationResolver) {
+  public CreateWarehouseUseCase(
+      WarehouseStore warehouseStore,
+      LocationResolver locationResolver,
+      WarehouseValidator warehouseValidator) {
     this.warehouseStore = warehouseStore;
     this.locationResolver = locationResolver;
+    this.warehouseValidator = warehouseValidator;
   }
 
   @Override
@@ -32,7 +37,7 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
         "Creating warehouse: buCode={0}, location={1}, capacity={2}, stock={3}",
         warehouse.businessUnitCode, warehouse.location, warehouse.capacity, warehouse.stock);
 
-    validateRequiredFields(warehouse);
+    warehouseValidator.validateRequiredFields(warehouse);
 
     // Business Unit Code Verification: must not already exist (assignment constraint)
     Warehouse existing = warehouseStore.findActiveByBusinessUnitCode(warehouse.businessUnitCode);
@@ -68,30 +73,5 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
     // If all validations pass, create the warehouse
     warehouseStore.create(warehouse);
     LOGGER.infov("Warehouse created successfully: {0}", warehouse.businessUnitCode);
-  }
-
-  /**
-   * Validates required fields and basic capacity/stock rules. Throws {@link
-   * InvalidWarehouseException} if any check fails.
-   */
-  private void validateRequiredFields(Warehouse warehouse) {
-    if (warehouse.businessUnitCode == null || warehouse.businessUnitCode.isBlank()) {
-      throw new InvalidWarehouseException("Business unit code is required");
-    }
-    if (warehouse.location == null || warehouse.location.isBlank()) {
-      throw new InvalidWarehouseException("Location is required");
-    }
-    if (warehouse.capacity == null) {
-      throw new InvalidWarehouseException("Capacity is required");
-    }
-    if (warehouse.stock == null) {
-      throw new InvalidWarehouseException("Stock is required");
-    }
-    if (warehouse.capacity <= 0) {
-      throw new InvalidWarehouseException("Capacity must be positive");
-    }
-    if (warehouse.stock < 0) {
-      throw new InvalidWarehouseException("Stock cannot be negative");
-    }
   }
 }

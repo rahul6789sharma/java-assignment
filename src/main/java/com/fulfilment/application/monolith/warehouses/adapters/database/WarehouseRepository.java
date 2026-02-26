@@ -7,6 +7,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 import org.jboss.logging.Logger;
 
+/**
+ * Warehouse persistence. All read methods return only active warehouses (archivedAt is null). Write
+ * operations (create, update, remove) resolve entities by id/businessUnitCode without filtering by
+ * archivedAt so that archive/replace flows can update the same record.
+ */
 @ApplicationScoped
 public class WarehouseRepository implements WarehouseStore, PanacheRepository<DbWarehouse> {
 
@@ -14,7 +19,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public List<Warehouse> getAll() {
-    return this.listAll().stream().map(DbWarehouse::toWarehouse).toList();
+    return this.find("archivedAt is null").stream().map(DbWarehouse::toWarehouse).toList();
   }
 
   @Override
@@ -58,16 +63,6 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
   }
 
   @Override
-  public Warehouse findByBusinessUnitCode(String buCode) {
-    LOGGER.infov("Finding warehouse by business unit code: {0}", buCode);
-    DbWarehouse entity = find("businessUnitCode", buCode).firstResult();
-    if (entity == null) {
-      return null;
-    }
-    return entity.toWarehouse();
-  }
-
-  @Override
   public Warehouse findActiveByBusinessUnitCode(String buCode) {
     LOGGER.infov("Finding active warehouse by business unit code: {0}", buCode);
     DbWarehouse entity = find("businessUnitCode = ?1 and archivedAt is null", buCode).firstResult();
@@ -83,7 +78,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
       return null;
     }
     DbWarehouse entity = findById(id);
-    if (entity == null) {
+    if (entity == null || entity.archivedAt != null) {
       return null;
     }
     return entity.toWarehouse();

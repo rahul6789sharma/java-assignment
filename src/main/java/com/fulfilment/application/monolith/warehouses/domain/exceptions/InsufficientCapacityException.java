@@ -1,12 +1,18 @@
 package com.fulfilment.application.monolith.warehouses.domain.exceptions;
 
-public class InsufficientCapacityException extends RuntimeException {
+import com.fulfilment.application.monolith.exception.BusinessException;
+
+public class InsufficientCapacityException extends BusinessException {
+
+  public static final String ERROR_CODE = "INSUFFICIENT_CAPACITY";
 
   public InsufficientCapacityException(int newCapacity, int requiredStock) {
     super(
         "New warehouse capacity "
             + newCapacity
             + " cannot accommodate the required stock of "
-            + requiredStock);
+            + requiredStock,
+        ERROR_CODE,
+        400);
   }
 }

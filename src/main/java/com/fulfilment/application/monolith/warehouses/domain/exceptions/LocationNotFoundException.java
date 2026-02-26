@@ -1,8 +1,12 @@
 package com.fulfilment.application.monolith.warehouses.domain.exceptions;
 
-public class LocationNotFoundException extends RuntimeException {
+import com.fulfilment.application.monolith.exception.BusinessException;
+
+public class LocationNotFoundException extends BusinessException {
+
+  public static final String ERROR_CODE = "LOCATION_NOT_FOUND";
 
   public LocationNotFoundException(String identifier) {
-    super("Location not found: " + identifier);
+    super("Location not found: " + identifier, ERROR_CODE, 400);
   }
 }

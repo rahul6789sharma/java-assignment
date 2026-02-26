@@ -56,6 +56,12 @@
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
 
+        <!-- Bean Validation (e.g. @Valid, ConstraintViolationException) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-validator</artifactId>
+        </dependency>
+
         <!-- Testing: -->
         <dependency>
             <groupId>io.quarkus</groupId>
