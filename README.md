@@ -82,6 +82,22 @@ Navigate to:
 
 Have fun, and join the team of contributors!
 
+## API Documentation
+
+The application provides interactive API documentation via Swagger UI:
+
+**Swagger UI:** <http://localhost:8080/q/swagger-ui/>
+
+Here you can:
+- 📖 View all available API endpoints
+- 🧪 Test endpoints directly from the browser
+- 📝 See request/response schemas
+- 🔍 Explore the Warehouse API operations (create, read, update, archive)
+
+**OpenAPI Specification:** <http://localhost:8080/q/openapi>
+
+The raw OpenAPI 3.0 specification is available at the above endpoint for integration with API clients or code generation tools.
+
 ## Testing and coverage
 
 - Run tests: `./mvnw test`
