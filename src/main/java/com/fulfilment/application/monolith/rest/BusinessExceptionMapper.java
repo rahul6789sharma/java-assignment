@@ -6,8 +6,8 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 /**
- * Single mapper for all business exceptions. Returns a consistent {@link ErrorResponse} (errorCode +
- * message) with the HTTP status defined on the exception.
+ * Single mapper for all business exceptions. Returns a consistent {@link ErrorResponse} (errorCode
+ * + message) with the HTTP status defined on the exception.
  */
 @Provider
 public class BusinessExceptionMapper implements ExceptionMapper<BusinessException> {

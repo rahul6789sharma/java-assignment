@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
-import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.TestTransaction;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -7,7 +7,8 @@ import jakarta.ws.rs.ext.Provider;
 
 /**
  * Maps Bean Validation {@link ConstraintViolationException} to 400 with a consistent {@link
- * ErrorResponse}. Message aggregates the first constraint violation or a generic validation message.
+ * ErrorResponse}. Message aggregates the first constraint violation or a generic validation
+ * message.
  */
 @Provider
 public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {

@@ -8,9 +8,9 @@ import java.util.List;
 import org.jboss.logging.Logger;
 
 /**
- * Warehouse persistence. All read methods return only active warehouses (archivedAt is null).
- * Write operations (create, update, remove) resolve entities by id/businessUnitCode without
- * filtering by archivedAt so that archive/replace flows can update the same record.
+ * Warehouse persistence. All read methods return only active warehouses (archivedAt is null). Write
+ * operations (create, update, remove) resolve entities by id/businessUnitCode without filtering by
+ * archivedAt so that archive/replace flows can update the same record.
  */
 @ApplicationScoped
 public class WarehouseRepository implements WarehouseStore, PanacheRepository<DbWarehouse> {
